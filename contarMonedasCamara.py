@@ -71,5 +71,26 @@ while True:
             x = int(momentos["m10"] / momentos["m00"])
             y = int(momentos["m01"] / momentos["m00"])
 
-            
+            if area < 9300 and area > 8000:
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                cv2.putText(imagen_A6, "$ 0,20", (x, y), font, 0.75, (0, 255, 0), 2)
+                suma1 += 0.2
 
+            if area < 7800 and area > 6500:
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                cv2.putText(imagen_A6, "$ 0,10", (x, y), font, 0.75, (0, 255, 0), 2)
+                suma2 += 0.1
+
+        total = suma2 + suma1
+        print(f"El total es de ${total:.2f}")
+
+        cv2.imshow("Imagen A6", imagen_A6)
+        cv2.imshow("Camara", camara)
+
+    if cv2.waitKey(1) == ord('q'):
+        break
+
+captura_video.release()
+cv2.destroyAllWindows()
+
+        
