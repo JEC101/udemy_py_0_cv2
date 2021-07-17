@@ -3,7 +3,7 @@ import numpy as np
 
 # ordenando el "espacio de trabajo" - se define donde se trabaja
 def ordenar_puntos(puntos):
-    n_puntos = np.concatenate(puntos[0], puntos[1], puntos[2], puntos[3]).tolist()
+    n_puntos = np.concatenate([puntos[0], puntos[1], puntos[2], puntos[3]]).tolist()
     y_order = sorted(n_puntos, key = lambda n_puntos: n_puntos[1])
     x1_order = y_order[0 : 2]
     x1_order = sorted(x1_order, key = lambda x1_order: x1_order[0])
@@ -20,7 +20,7 @@ def alineamiento(imagen, ancho, alto): #la funcion define el area de trabajo
     tipo_umbral, umbral = cv2.threshold(grises, 150, 255, cv2.THRESH_BINARY)
     cv2.imshow("Umbral", umbral)
 
-    contorno, jerarquia = cv2.findContours(umbral, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+    contorno = cv2.findContours(umbral, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
     contorno = sorted(contorno, key = cv2.contourArea, reverse = True)[0:1]
     for c in contorno:
         # bajamos la "frecuencia de curvas" para hacerlo más armónico y con menos ruido
@@ -54,7 +54,7 @@ while True:
         _, umbral_2 = cv2.threshold(blur, 0, 255, cv2.THRESH_OTSU + cv2.THRESH_BINARY_INV) #invertimos los colores del fondo y de la hoja
         cv2.imshow("Umbral 2", umbral_2)
 
-        contorno_2, jerarquia_2 = cv2.findContours(umbral_2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+        contorno_2 = cv2.findContours(umbral_2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
         #dibujar los contornos:
         cv2.drawContours(imagen_A6, contorno_2, -1, (255, 0, 0), 2)
         
