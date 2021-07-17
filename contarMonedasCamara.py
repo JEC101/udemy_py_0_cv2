@@ -17,7 +17,7 @@ def alineamiento(imagen, ancho, alto): #la funcion define el area de trabajo
 
     grises = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
 
-    tipo_umbral, umbral = cv2.threshold(grises, 150, 255, cv2.THRESH_BINARY)
+    tipo_umbral, umbral = cv2.threshold(grises, 100, 255, cv2.THRESH_BINARY)
     cv2.imshow("Umbral", umbral)
 
     contorno = cv2.findContours(umbral, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
@@ -28,19 +28,21 @@ def alineamiento(imagen, ancho, alto): #la funcion define el area de trabajo
         aprox = cv2.approxPolyDP(c, epsilon, True)
 
         if len(aprox) == 4: #4 porque son los 4 ptos definidos arriba (encuentra el circulo)
+            print("punto 4")
             puntos = ordenar_puntos(aprox) # llamamos la función de arriba con los 4 puntos encontrados
             punto_s1 = np.float32(puntos) #convierte los ptos en matrices de enteros
-            puntos_s2 = np.float32([0,0], [ancho, 0], [0, alto], [ancho, alto]) #definimos los 4 extremos del area de trabajo con coordenadas
+            puntos_s2 = np.float32([[0,0], [ancho, 0], [0, alto], [ancho, alto]]) #definimos los 4 extremos del area de trabajo con coordenadas
             M = cv2.getPerspectiveTransform(punto_s1, puntos_s2) #no se cambia de lugar aunque gire la camara
             imagen_alineada = cv2.warpPerspective(imagen, M, (ancho, alto))
     
     return imagen_alineada
 
 captura_video = cv2.VideoCapture(0)
-
+print("punto 1")
 while True:
     tipo_camara, camara = captura_video.read()
     if tipo_camara == False:
+        print("Tipo camara ==FAlse")
         break
     imagen_A6 = alineamiento(camara, ancho = 677,  alto = 480)
     """El ancho y alto en la linea superior estan definidos en pixeles,
@@ -48,6 +50,7 @@ while True:
     y la definicion de la camara a utilizar. Es importante escalar para poder reconocer"""
 
     if imagen_A6 is not None:
+        print("Reconocio A6")
         puntos = []
         imagen_gris = cv2.cvtColor(imagen_A6, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(imagen_gris, (5,5), 1)
@@ -68,7 +71,8 @@ while True:
             if (momentos["m00"] == 0): #si el momento está estático
                 momentos["m00"] == 1.0 #si está estático agregamos 1
 
-            x = int(momentos["m10"] / momentos["m00"])
+            try: x = int(momentos["m10"] / momentos["m00"])
+            except: break
             y = int(momentos["m01"] / momentos["m00"])
 
             if area < 9300 and area > 8000:
@@ -93,4 +97,3 @@ while True:
 captura_video.release()
 cv2.destroyAllWindows()
 
-        
