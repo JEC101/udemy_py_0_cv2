@@ -1,3 +1,5 @@
+#Reconocimiento de rostros a partir de la cámara
+
 import cv2 as cv
 import os
 import imutils
